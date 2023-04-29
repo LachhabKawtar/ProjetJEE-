@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template">
+<head>
+    <meta charset="UTF-8">
+    <title>AppHopital</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+</head>
+<body>
+<div layout:fragment="content1">
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header text-center text-bg-success text-decoration-underline ">Liste Medecins</div>
+            <div class="card-body">
+                <form th:action="@{/user/medecins}" method="get">
+                    <label>Mot Clé:</label>
+                    <input type="text" class="mx-sm-3 mb-2" name="keyword" th:value="${keyword}"/>
+                    <button type="submit" class="btn btn-info">
+                        <i class="bi bi-search"></i>
+                    </button>
+                 <!--   <a class="dropdown-item" th:href="@{/admin/formPatient}">Nouveau+</a>-->
+                </form>
+                <table class="table">
+                    <thead>
+                    <th>#Id</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Spécialité</th>
+                    <th th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Delete</th>
+                    <th th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Edit</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c:${listMedecins}">
+                        <td th:text="${c.id}">
+                        <td th:text="${c.nom}">
+                        <td th:text="${c.email}">
+                        <td th:text="${c.specialite}">
+                        </td>
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                            <a onclick="return confirm('Etes vous sûr?')" class="btn btn-danger" th:href="@{/admin/deleteMedecins(id=${c.id},
+                                                                keyword=${keyword},
+                                                                page=${currentePage})}">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                            <a  class="btn btn-success" th:href="@{/admin/editMedecin(id=${c.id},
+                                                                keyword=${keyword},
+                                                                page=${currentePage})}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+                <ul class="nav nav-pills">
+                    <li th:each="page,status:${pages}">
+                        <a th:class="${status.index==currentePage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+                            th:text="${status.index}"
+                            th:href="@{/user/medecins(page=${status.index},keyword=${keyword})}"
+                        >
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
